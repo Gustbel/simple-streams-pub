@@ -1,4 +1,5 @@
 use std::env;
+use rand::{distributions::Alphanumeric, Rng}; // 0.8
 
 use iota_streams::{
     app::transport::{
@@ -17,9 +18,20 @@ use iota_streams::{
 //    },
 };
 
-fn main() {
+
+
+#[tokio::main]
+async fn main() {
+
+    // Seed generator
+    let seed: String = rand::thread_rng()
+    .sample_iter(&Alphanumeric)
+    .take(81)
+    .map(char::from)
+    .collect();
+
     // Initial Configuration
-    let node_url = "http://116.203.221.20:14265".to_string();
+    let node_url = "http://65.21.63.196:14265".to_string();
     let node_mwm: u8 = env::var("MWM").map(|s| s.parse().unwrap_or(14)).unwrap_or(14);
     let mut client = StreamsClient::new_from_url(&node_url);  
         
@@ -29,13 +41,13 @@ fn main() {
     send_opt.local_pow = false;
     client.set_send_options(send_opt);
 
-    let mut author = Author::new("a", "utf-8", PAYLOAD_BYTES, false, client);
+    let mut author = Author::new(&seed, "utf-8", PAYLOAD_BYTES, false, client);
 
     println!("New Author");
     let channel_address = author.channel_address().unwrap().to_string();
     println!("Channel Address: {}", channel_address);
 
     let _announcement_message = author.send_announce();
-
+    println!("Announcement Message: {:?}", _announcement_message);
 
 }

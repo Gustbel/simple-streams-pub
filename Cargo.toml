@@ -8,3 +8,5 @@ edition = "2018"
 
 [dependencies]
 iota-streams = { git = "https://github.com/iotaledger/streams", branch = "chrysalis-2" }
+tokio = "1.4.0"
+rand = "0.7.3"
